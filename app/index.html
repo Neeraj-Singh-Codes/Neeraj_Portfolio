@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARCHITECT | VISUAL EXPERIENCE</title>
+    <style>
+      /* --- 1. CONFIGURATION & RESET --- */
+      :root {
+        --bg: #0a0a0a;
+        --surface: #141414;
+        --text: #e0e0e0;
+        --text-dim: #666;
+        --accent: #d43f3f; /* International Orange */
+        --grid-color: rgba(255, 255, 255, 0.03);
+        --font-display: "Helvetica Neue", "Arial Black", sans-serif;
+        --font-mono: "Courier New", monospace;
+        --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+        --ease-fluid: cubic-bezier(0.77, 0, 0.175, 1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        cursor: none; /* Custom cursor */
+      }
+
+      html {
+        scroll-behavior: smooth;
+        font-size: 16px;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: var(--font-display);
+        overflow-x: hidden;
+        overflow-y: hidden; /* Locked until loader finishes */
+      }
+
+      body.active {
+        overflow-y: auto;
+      }
+
+      /* Noise Texture Overlay for "Film" look */
+      .noise-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9000;
+        opacity: 0.05;
+        background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+      }
+
+      /* --- 2. CUSTOM CURSOR --- */
+      .cursor-dot,
+      .cursor-circle {
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 9999;
+        border-radius: 50%;
+      }
+      .cursor-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--text);
+      }
+      .cursor-circle {
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        transition: width 0.2s, height 0.2s, background-color 0.2s;
+      }
+      /* Hover State */
+      body.hovering .cursor-circle {
+        width: 80px;
+        height: 80px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: transparent;
+        mix-blend-mode: difference;
+      }
+
+      /* --- 3. NAVIGATION (Magnetic & Scroll Tracked) --- */
+      .nav-dock {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px); /* Hidden initially */
+        background: rgba(20, 20, 20, 0.8);
+        backdrop-filter: blur(10px);
+        padding: 15px 30px;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        gap: 30px;
+        z-index: 1000;
+        transition: transform 1s var(--ease-out);
+      }
+
+      .nav-dock.visible {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .nav-link {
+        color: var(--text-dim);
+        text-decoration: none;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        text-transform: uppercase;
+        position: relative;
+        transition: color 0.3s;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: var(--text);
+      }
+
+      /* Active Indicator Dot */
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        width: 4px;
+        height: 4px;
+        background: var(--accent);
+        border-radius: 50%;
+        transform: translateX(-50%) scale(0);
+        transition: transform 0.3s;
+      }
+      .nav-link.active::after {
+        transform: translateX(-50%) scale(1);
+      }
+
+      /* --- 4. ENTRANCE LOADER (Cinematic Split) --- */
+      .loader-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .loader-panel {
+        position: absolute;
+        width: 100%;
+        height: 51%; /* Overlap slightly to prevent gap */
+        background: #000;
+        z-index: 2;
+        transition: transform 1.5s var(--ease-fluid);
+      }
+      .panel-top {
+        top: 0;
+        transform-origin: top;
+      }
+      .panel-bottom {
+        bottom: 0;
+        transform-origin: bottom;
+      }
+
+      .loader-counter {
+        position: relative;
+        z-index: 3;
+        font-size: 10vw;
+        font-weight: 900;
+        color: #fff;
+        mix-blend-mode: exclusion;
+        font-family: var(--font-mono);
+      }
+
+      /* Loader Exit State */
+      body.loaded .panel-top {
+        transform: scaleY(0);
+      }
+      body.loaded .panel-bottom {
+        transform: scaleY(0);
+      }
+      body.loaded .loader-counter {
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+      body.loaded .loader-wrapper {
+        pointer-events: none;
+      }
+
+      /* --- 5. ANIMATION UTILITIES (Staggered) --- */
+      .reveal {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
+      }
+
+      /* Use CSS Variables for Delay control in HTML */
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: var(--delay, 0s);
+      }
+
+      /* --- 6. HERO SECTION (Massive Typography) --- */
+      .hero {
+        height: 90vh;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 5vw;
+        overflow: hidden;
+      }
+
+      .hero-bg-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 100px 100px;
+        opacity: 0.5;
+        transform: perspective(500px) rotateX(60deg) scale(2);
+        transform-origin: top center;
+      }
+
+      .hero-line {
+        overflow: hidden; /* Mask for text */
+        line-height: 0.9;
+      }
+
+      .hero-text {
+        display: block;
+        font-size: 11vw;
+        text-transform: uppercase;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.04em;
+        transform: translateY(50%); /* Start hidden below mask */
+        transition: transform 1.1s var(--ease-fluid);
+      }
+
+      body.loaded .hero-text {
+        transform: translateY(0);
+      }
+
+      .hero-sub {
+        font-family: var(--font-mono);
+        color: var(--accent);
+        margin-top: 20px;
+        font-size: 1rem;
+        opacity: 0;
+        animation: fadeIn 1s forwards 1s; /* Runs after loader */
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* --- 7. STICKY ABOUT (Text Reveal) --- */
+      .about-section {
+        position: relative;
+        height: 300vh; /* Very tall for scroll space */
+        background: var(--surface);
+      }
+
+      .sticky-wrapper {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .about-text-container {
+        position: relative;
+        width: 80%;
+        text-align: center;
+      }
+
+      .about-sentence {
+        font-size: 3rem;
+        line-height: 1.2;
+        color: #333; /* Inactive color */
+        transition: color 0.5s;
+      }
+
+      /* Highlight word */
+      .h-word {
+        display: inline-block;
+        color: #333;
+        transition: color 0.5s, transform 0.5s;
+      }
+      .h-word.lit {
+        color: #fff;
+        transform: scale(1.05);
+      }
+
+      /* --- 8. HORIZONTAL WORK (The Gallery) --- */
+      .works-section {
+        position: relative;
+        height: 400vh; /* Scroll distance */
+        background: var(--bg);
+      }
+
+      .works-sticky {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+      }
+
+      .works-track {
+        display: flex;
+        gap: 100px;
+        padding-left: 10vw;
+        /* Will be animated via JS */
+      }
+
+      .work-card {
+        position: relative;
+        width: 60vw;
+        height: 70vh;
+        flex-shrink: 0;
+        background: #111;
+        border: 1px solid #333;
+        overflow: hidden; /* Mask */
+      }
+
+      .work-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 1s ease;
+        filter: grayscale(100%);
+      }
+
+      .work-card:hover .work-img {
+        transform: scale(1.1);
+        filter: grayscale(0%);
+      }
+
+      .work-info {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        z-index: 10;
+        mix-blend-mode: difference;
+      }
+
+      .work-num {
+        font-family: var(--font-mono);
+        font-size: 4rem;
+        color: transparent;
+        -webkit-text-stroke: 1px #fff;
+      }
+      .work-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+      /* --- 9. TECH STACK (Grid Ripple) --- */
+      .tech-section {
+        padding: 150px 5vw;
+        background: var(--bg);
+        min-height: 100vh;
+      }
+
+      .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1px;
+        background: rgba(255, 255, 255, 0.1); /* Creates grid lines */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .tech-item {
+        background: var(--bg); /* Covers the gap background */
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: var(--font-mono);
+        transition: background 0.3s;
+        position: relative;
+      }
+
+      .tech-item:hover {
+        background: var(--surface);
+      }
+      .tech-item:hover span {
+        color: var(--accent);
+      }
+
+      /* --- 10. FOOTER --- */
+      footer {
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #fff; /* High contrast ending */
+        color: #000;
+        position: relative;
+        clip-path: polygon(
+          0 20%,
+          100% 0,
+          100% 100%,
+          0 100%
+        ); /* Angled entrance Mask */
+        margin-top: -10vh; /* Overlap previous section */
+      }
+
+      .contact-link {
+        font-size: 8vw;
+        font-weight: 900;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #000;
+        position: relative;
+        cursor: none; /* Keep custom cursor */
+      }
+
+      .contact-link::before {
+        content: "EMAIL ME";
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: var(--accent);
+        height: 0%;
+        overflow: hidden;
+        transition: height 0.5s ease;
+      }
+      .contact-link:hover::before {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NOISE OVERLAY -->
+    <div class="noise-overlay"></div>
+
+    <!-- CUSTOM CURSOR -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
+
+    <!-- LOADER SEQUENCE -->
+    <div class="loader-wrapper">
+      <div class="loader-panel panel-top"></div>
+      <div class="loader-panel panel-bottom"></div>
+      <div class="loader-counter">000</div>
+    </div>
+
+    <!-- NAVIGATION DOCK -->
+    <nav class="nav-dock">
+      <a href="#home" class="nav-link active" data-target="home">System</a>
+      <a href="#about" class="nav-link" data-target="about">Profile</a>
+      <a href="#work" class="nav-link" data-target="work">Projects</a>
+      <a href="#tech" class="nav-link" data-target="tech">Stack</a>
+      <a href="#contact" class="nav-link" data-target="contact">Connect</a>
+    </nav>
+
+    <!-- 1. HERO -->
+    <section id="home" class="hero hover-trigger">
+      <div class="hero-bg-grid"></div>
+
+      <div class="hero-line">
+        <span class="hero-text">Computer</span>
+      </div>
+      <div class="hero-line">
+        <span class="hero-text" style="color: var(--accent)">Science</span>
+      </div>
+      <div class="hero-line">
+        <span class="hero-text">Engineer</span>
+      </div>
+
+      <div class="hero-sub">
+        UI/UX PASSIONATE <br />
+        BASED IN INDIA
+      </div>
+    </section>
+
+    <!-- 2. STICKY NARRATIVE (Text Masking) -->
+    <section id="about" class="about-section">
+      <div class="sticky-wrapper">
+        <div class="about-text-container">
+          <p class="about-sentence">
+            <span class="h-word">I</span> <span class="h-word">craft</span>
+            <span class="h-word">digital</span>
+            <span class="h-word">experiences</span>
+            <span class="h-word">where</span> <span class="h-word">logic</span>
+            <span class="h-word">meets</span>
+            <span class="h-word">aesthetics.</span> <br /><br />
+            <span class="h-word">Obsessed</span>
+            <span class="h-word">with</span> <span class="h-word">pixel</span>
+            <span class="h-word">perfection</span>
+            <span class="h-word">and</span> <span class="h-word">smooth</span>
+            <span class="h-word">interactions.</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. HORIZONTAL PROJECTS -->
+    <section id="work" class="works-section hover-trigger">
+      <div class="works-sticky">
+        <div class="works-track">
+          <!-- Project 01 -->
+          <div class="work-card">
+            <img
+              src="../zClient2/images/i3.jpg"
+              class="work-img"
+              alt="Project 1"
+            />
+            <div class="work-info">
+              <div class="work-num">01</div>
+              <div class="work-title">FinTech Dashboard</div>
+            </div>
+          </div>
+          <!-- Project 02 -->
+          <div class="work-card">
+            <img
+              src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80"
+              class="work-img"
+              alt="Project 2"
+            />
+            <div class="work-info">
+              <div class="work-num">02</div>
+              <div class="work-title">AI Neural Vis</div>
+            </div>
+          </div>
+          <!-- Project 03 -->
+          <div class="work-card">
+            <img
+              src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"
+              class="work-img"
+              alt="Project 3"
+            />
+            <div class="work-info">
+              <div class="work-num">03</div>
+              <div class="work-title">Crypto Exchange</div>
+            </div>
+          </div>
+          <!-- Project 04 -->
+          <div class="work-card">
+            <img
+              src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80"
+              class="work-img"
+              alt="Project 4"
+            />
+            <div class="work-info">
+              <div class="work-num">04</div>
+              <div class="work-title">Portfolio V1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. TECH STACK -->
+    <section id="tech" class="tech-section">
+      <h2
+        class="reveal"
+        style="font-size: 3rem; margin-bottom: 50px; --delay: 0s"
+      >
+        Command Line
+      </h2>
+      <div class="tech-grid">
+        <div class="tech-item reveal" style="--delay: 0.1s">
+          <span>React.js</span>
+        </div>
+        <div class="tech-item reveal" style="--delay: 0.2s">
+          <span>TypeScript</span>
+        </div>
+        <div class="tech-item reveal" style="--delay: 0.3s">
+          <span>Node.js</span>
+        </div>
+        <div class="tech-item reveal" style="--delay: 0.4s">
+          <span>WebGL</span>
+        </div>
+        <div class="tech-item reveal" style="--delay: 0.5s">
+          <span>Python</span>
+        </div>
+        <div class="tech-item reveal" style="--delay: 0.6s">
+          <span>AWS</span>
+        </div>
+        <div class="tech-item reveal" style="--delay: 0.7s">
+          <span>Docker</span>
+        </div>
+        <div class="tech-item reveal" style="--delay: 0.8s">
+          <span>Figma</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. FOOTER -->
+    <footer id="contact" class="hover-trigger">
+      <p style="font-family: var(--font-mono); margin-bottom: 20px">
+        READY TO DEPLOY?
+      </p>
+      <a href="mailto:hello@world.com" class="contact-link">Hello@Dev.com</a>
+    </footer>
+
+    <script>
+      // --- 1. LOADER SEQUENCE ---
+      const counter = document.querySelector(".loader-counter");
+      let count = 0;
+
+      // Simulate loading time
+      const interval = setInterval(() => {
+        count += Math.floor(Math.random() * 10) + 1;
+        if (count > 100) count = 100;
+        counter.textContent = count.toString().padStart(3, "0"); // Format: 005, 050, 100
+
+        if (count === 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            document.body.classList.add("loaded");
+            document.body.classList.add("active");
+
+            // Reveal Nav after loader
+            setTimeout(() => {
+              document.querySelector(".nav-dock").classList.add("visible");
+            }, 2000);
+          }, 500);
+        }
+      }, 30);
+
+      // --- 2. CUSTOM CURSOR LOGIC ---
+      const dot = document.querySelector(".cursor-dot");
+      const circle = document.querySelector(".cursor-circle");
+      const hoverTriggers = document.querySelectorAll(
+        ".hover-trigger, a, .tech-item"
+      );
+
+      window.addEventListener("mousemove", (e) => {
+        const posX = e.clientX;
+        const posY = e.clientY;
+
+        // Dot moves instantly
+        dot.style.left = `${posX}px`;
+        dot.style.top = `${posY}px`;
+
+        // Circle moves with slight delay (Lag effect for artistic feel)
+        circle.animate(
+          {
+            left: `${posX}px`,
+            top: `${posY}px`,
+          },
+          { duration: 500, fill: "forwards" }
+        );
+      });
+
+      // Add hover states
+      hoverTriggers.forEach((el) => {
+        el.addEventListener("mouseenter", () =>
+          document.body.classList.add("hovering")
+        );
+        el.addEventListener("mouseleave", () =>
+          document.body.classList.remove("hovering")
+        );
+      });
+
+      // --- 3. SCROLL OBSERVERS (Reveal & Sticky Logic) ---
+
+      // A. General Reveal Animation
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("active");
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => revealObserver.observe(el));
+
+      // B. Sticky About Word Lighting
+      // We map scroll percentage of the About section to the number of words lit
+      const aboutSection = document.querySelector(".about-section");
+      const words = document.querySelectorAll(".h-word");
+
+      window.addEventListener("scroll", () => {
+        // --- Horizontal Scroll Logic ---
+        const workSection = document.querySelector(".works-section");
+        const workTrack = document.querySelector(".works-track");
+
+        const workTop = workSection.offsetTop;
+        const workHeight = workSection.offsetHeight;
+        const scrollY = window.scrollY;
+        const screenH = window.innerHeight;
+
+        if (scrollY >= workTop && scrollY <= workTop + workHeight) {
+          // Calculate percentage scrolled WITHIN the work section
+          const progress = (scrollY - workTop) / (workHeight - screenH);
+          const moveX = progress * (workTrack.scrollWidth - window.innerWidth);
+          workTrack.style.transform = `translateX(-${moveX}px)`;
+        }
+
+        // --- Sticky Text Logic ---
+        const aboutTop = aboutSection.offsetTop;
+        const aboutH = aboutSection.offsetHeight;
+
+        if (scrollY >= aboutTop && scrollY <= aboutTop + aboutH) {
+          const progress = (scrollY - aboutTop) / (aboutH - screenH);
+          const wordIndex = Math.floor(progress * words.length);
+
+          words.forEach((word, i) => {
+            if (i <= wordIndex) word.classList.add("lit");
+            else word.classList.remove("lit");
+          });
+        }
+      });
+
+      // --- 4. ACTIVE NAV HIGHLIGHTING ---
+      const sections = document.querySelectorAll("section, footer");
+      const navLinks = document.querySelectorAll(".nav-link");
+
+      const navObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const id = entry.target.getAttribute("id");
+              navLinks.forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("data-target") === id) {
+                  link.classList.add("active");
+                }
+              });
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+
+      sections.forEach((sec) => navObserver.observe(sec));
+    </script>
+  </body>
+</html>
+isko responsive bhi bana dena

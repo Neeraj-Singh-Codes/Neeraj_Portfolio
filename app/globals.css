@@ -33,3 +33,30 @@ body {
   color: var(--foreground);
   font-family: var(--font-general), sans-serif;
 }
+
+/* ========= UNIVERSAL SMOOTH LEFT→RIGHT UNDERLINE ========= */
+
+.hover-underline {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;  /* IMPORTANT for correct animation */
+}
+
+.hover-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+
+  width: 0%;
+  height: 2px;
+
+  background-color: currentColor;
+  transition: width 0.25s ease-out;  /* smooth left → right */
+  will-change: width;
+}
+
+.hover-underline:hover::after {
+  width: 100%;
+}
+

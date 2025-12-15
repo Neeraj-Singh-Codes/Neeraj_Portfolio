@@ -1,8 +1,11 @@
+'use client'
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import CursorBall from "./components/cursorBall";
+import { lenis } from "./lib/lenis";
+import { useEffect } from "react";
 
-// ---- Load General Sans EXACT font ----
 const generalSans = localFont({
   src: [
     {
@@ -19,21 +22,25 @@ const generalSans = localFont({
   variable: "--font-general-sans",
 });
 
-// ---- Metadata ----
-export const metadata: Metadata = {
-  title: "My Portfolio",
-  description: "Made with Next.js",
-};
 
-// ---- Layout ----
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-}) {
+}) { useEffect(() => {
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+  }, []);
+{
   return (
     <html lang="en" className={generalSans.variable}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <CursorBall />
+        {children}</body>
     </html>
   );
+}
 }

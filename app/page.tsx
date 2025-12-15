@@ -1,14 +1,19 @@
+"use client";
+
+import { useState } from "react";
 import Preloader from "./components/loaderScreen";
-import Hero from './components/heroSection'
-export default function Home() {
+import Hero from "./components/heroSection";
+import HorizontalProjects from "./components/projectWork";
+
+export default function Page() {
+  const [done, setDone] = useState(false);
+
   return (
     <>
-      <Preloader />
-      <Hero/>
-
-      <main className="h-screen w-full bg-white text-black">
-        <div className="p-10 text-5xl font-bold">Your Portfolio Main Section</div>
-      </main>
+      <Preloader onFinish={() => setDone(true)} />
+        
+      <Hero startAnimation={done} />
+      <HorizontalProjects />
     </>
   );
 }

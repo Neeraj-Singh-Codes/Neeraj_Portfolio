@@ -73,13 +73,13 @@ export default function TechStack() {
 
         {/* RIGHT COLUMN: SHOWCASE */}
         <div className="h-full flex flex-col justify-start pt-4 relative min-h-[40vh]">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout"> 
                 <motion.div
                     key={activeId}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20, filter: "blur(5px)" }}
-                    transition={{ duration: 0.4 }}
+                    initial={{ opacity: 0, x: 20, filter: "blur(2px)" }}
+                    animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, x: -20, filter: "blur(2px)", transition: { duration: 0.15 } }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
                     className="flex flex-col gap-8"
                 >
                     {/* Description */}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Preloader from "./components/loaderScreen";
 import Hero from "./components/heroSection";
 import HorizontalProjects from "./components/projectWork";
+import TechStack from "./components/techStack";
 
 export default function Page() {
   const [done, setDone] = useState(false);
@@ -14,6 +15,7 @@ export default function Page() {
         
       <Hero startAnimation={done} />
       <HorizontalProjects />
+      <TechStack />
     </>
   );
 }

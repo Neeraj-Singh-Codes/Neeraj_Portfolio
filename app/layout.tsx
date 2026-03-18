@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) { useEffect(() => {
     function raf(time: number) {
-      lenis.raf(time);
+      lenis?.raf(time);
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);

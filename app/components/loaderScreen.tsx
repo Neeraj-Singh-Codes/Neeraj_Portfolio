@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
-export default function Preloader({ onFinish })  {
+export default function Preloader({ onFinish }: { onFinish: () => void })  {
   const [loading, setLoading] = useState(true);
   const [percentage, setPercentage] = useState(0);
 
@@ -16,8 +16,10 @@ export default function Preloader({ onFinish })  {
 
       if (start >= 100) {
         clearInterval(interval);
-        setTimeout(() => setLoading(false),
-        onFinish() , 400);
+        setTimeout(() => {
+          setLoading(false);
+          onFinish();
+        }, 400);
       }
     }, 20);
 

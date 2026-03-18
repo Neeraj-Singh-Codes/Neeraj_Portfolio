@@ -130,7 +130,7 @@ export default function HorizontalProjects() {
           </div>
 
           {/* 2...N. PROJECT SLIDES */}
-          {projects.map((p, i) => (
+          { projects.map((p: any, i) => (
             <div
               key={i}
               className="w-screen h-screen flex items-center justify-center gap-20 shrink-0 px-10"

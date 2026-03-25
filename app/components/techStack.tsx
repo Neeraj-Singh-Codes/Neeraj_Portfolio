@@ -6,22 +6,29 @@ import { useState } from "react";
 const categories = [
   {
     id: "01",
-    name: "Frontend",
+    name: "Languages",
     desc: "Crafting immersive, responsive, and performant user interfaces.",
-    skills: ["React", "Next.js", "JavaScript", "Tailwind CSS", "HTML", "CSS"],
+    skills: ["JavaScript", "Python", "TypeScript"],
   },
   {
     id: "02",
-    name: "Backend",
-    desc: "Architecting robust, scalable server-side systems and databases.",
-    skills: ["Node.js", "Express", "MongoDB", "Docker", "Python"],
+    name: "Frontend",
+    desc: "Crafting immersive, responsive, and performant user interfaces.",
+    skills: ["HTML", "CSS", "TailwindCSS", "React"],
   },
   {
     id: "03",
+    name: "Backend",
+    desc: "Architecting robust, scalable server-side systems and databases.",
+    skills: ["Node.js", "Express", "MongoDB"],
+  },
+  
+  {
+    id: "04",
     name: "Tools",
     desc: "Optimizing workflows with modern development and deployment tools.",
     skills: ["Git & GitHub", "render", "Linux", "Postman"],
-  },
+  }
 ];
 
 export default function TechStack() {
@@ -62,7 +69,7 @@ export default function TechStack() {
                     </span>
                     {/* Lucid Slide Animation */}
                     <h2 
-                        className={`text-5xl md:text-8xl font-bold uppercase tracking-tighter transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${activeId === i ? "translate-x-6 text-white" : "text-white/40 group-hover:text-white/70"}`}
+                        className={`text-5xl md:text-[92px] font-bold uppercase tracking-tighter transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${activeId === i ? "translate-x-6 text-white" : "text-white/40 group-hover:text-white/70"}`}
                     >
                         {cat.name}
                     </h2>

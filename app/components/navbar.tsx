@@ -3,12 +3,40 @@
 import { Plus } from 'lucide-react'
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { lenis } from '../lib/lenis'
 
 const Navbar = () => {
   const [hide, setHide] = useState(false)
+  const [isGlitching, setIsGlitching] = useState(false)
+
+  const handleNavClick = (id: string) => {
+    setHide(false)
+    
+    // Add glitch class to body
+    document.body.classList.add('black-glitch-active')
+
+    // Middle of the glitch -> scroll
+    setTimeout(() => {
+      const el = document.getElementById(id)
+      if (el) {
+        // lenis scroll if possible, otherwise native
+        if (lenis) {
+          lenis.scrollTo(el, { immediate: true })
+        } else {
+          el.scrollIntoView({ behavior: 'instant' })
+        }
+      }
+    }, 400) // 400ms half-way point
+
+    // End of the glitch -> remove body class
+    setTimeout(() => {
+      document.body.classList.remove('black-glitch-active')
+    }, 800)
+  }
 
   return (
-    
+    <>
+
 <motion.div
             key="menu"
             initial={{ opacity: 0, y: -10 }}
@@ -44,16 +72,16 @@ className="flex justify-between items-center px-[2.5%] py-7 bg-black text-white 
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.35 }}
             className="flex gap-7"
-            onClick={() => setHide(false)}
           >
-            <a className=' cursor-pointer hover-underline'>PROJECTS</a>
-            <a className=' cursor-pointer hover-underline'>SKILLS</a>
-            <a className=' cursor-pointer hover-underline'>CONTACTS</a>
+            <button onClick={() => handleNavClick('projects')} className='cursor-pointer hover-underline uppercase uppercase'>PROJECTS</button>
+            <button onClick={() => handleNavClick('skills')} className='cursor-pointer hover-underline uppercase'>SKILLS</button>
+            <button onClick={() => handleNavClick('contacts')} className='cursor-pointer hover-underline uppercase'>CONTACTS</button>
           </motion.div>
         )}
 
       </AnimatePresence>
     </motion.div>
+    </>
   )
 }
 

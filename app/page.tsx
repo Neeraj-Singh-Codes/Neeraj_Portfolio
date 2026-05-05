@@ -6,6 +6,7 @@ import Hero from "./components/heroSection";
 import HorizontalProjects from "./components/projectWork";
 import TechStack from "./components/techStack";
 import Timeline from "./components/timeline";
+import AboutMe from "./components/aboutMe";
 
 export default function Page() {
   const [done, setDone] = useState(false);
@@ -18,6 +19,7 @@ export default function Page() {
       <HorizontalProjects />
       <TechStack />
       <Timeline />
+      <AboutMe />
     </>
   );
 }

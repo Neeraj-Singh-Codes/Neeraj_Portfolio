@@ -20,14 +20,14 @@ const categories = [
     id: "03",
     name: "Backend",
     desc: "Architecting robust, scalable server-side systems and databases.",
-    skills: ["Node.js", "Express", "MongoDB"],
+    skills: ["Node.js", "Express", "MongoDB", "Postgres"],
   },
   
   {
     id: "04",
     name: "Tools",
     desc: "Optimizing workflows with modern development and deployment tools.",
-    skills: ["Git & GitHub", "render", "Linux", "Postman"],
+    skills: ["Git & GitHub", "render", "Linux", "Postman", "Antigravity"],
   }
 ];
 
@@ -35,7 +35,7 @@ export default function TechStack() {
   const [activeId, setActiveId] = useState(0);
 
   return (
-    <section className="bg-black text-white min-h-screen py-24 flex flex-col justify-center relative overflow-hidden">
+    <section id="skills" className="bg-black text-white min-h-screen py-24 flex flex-col justify-center relative overflow-hidden">
       
       {/* MAIN TITLE: Big & Fading from Below */}
       <div className="max-w-7xl mx-auto w-full mb-24 overflow-hidden text-center">

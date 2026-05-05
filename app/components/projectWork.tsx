@@ -111,6 +111,7 @@ export default function HorizontalProjects() {
 
   return (
     <section 
+      id="projects"
       ref={ref} 
       className="relative bg-black text-white"
       style={{ height: sectionHeight }}

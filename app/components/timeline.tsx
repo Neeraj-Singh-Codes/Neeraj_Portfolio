@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef } from "react";
 
 const timelineData = [
@@ -41,8 +41,8 @@ export default function Timeline() {
         <motion.h2 
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-7xl md:text-[8rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20 mb-6"
         >
           My Journey
@@ -74,6 +74,9 @@ export default function Timeline() {
 
 function TimelineItem({ item, index }: { item: any; index: number }) {
   const isEven = index % 2 === 0;
+  const ref = useRef<HTMLDivElement>(null);
+  // Only trigger once when the card is 15% into the viewport - prevents double-fire flicker
+  const isInView = useInView(ref, { once: true, amount: 0.15 });
 
   return (
     <div className={`relative flex items-center ${isEven ? "md:justify-start" : "md:justify-end"}`}>
@@ -83,15 +86,14 @@ function TimelineItem({ item, index }: { item: any; index: number }) {
             <div className="w-full h-full bg-white rounded-full scale-0 transition-transform duration-500 group-hover:scale-100" />
         </div>
 
-        {/* YEAR (Mobile-only, or subtle BG) */}
-        
         {/* CONTENT CARD */}
-        <motion.div 
-            initial={{ opacity: 0, x: isEven ? -50 : 50, y: 20 }}
-            whileInView={{ opacity: 1, x: 0, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.1 }} // Less delay
-             className={`ml-16 md:ml-0 w-full md:w-[45%] p-8 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-300 group hover:-translate-y-2`}
+        <motion.div
+            ref={ref}
+            initial={{ opacity: 0, x: isEven ? -40 : 40 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: isEven ? -40 : 40 }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: index * 0.1 }}
+            style={{ willChange: "transform, opacity" }}
+            className={`ml-16 md:ml-0 w-full md:w-[45%] p-8 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-300 group hover:-translate-y-2`}
         >
              <span className="text-5xl md:text-7xl font-bold text-white/10 absolute -top-10 right-4 md:right-auto md:left-4 select-none pointer-events-none font-mono">
                 {item.year}

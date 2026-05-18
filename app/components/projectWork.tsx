@@ -134,11 +134,11 @@ export default function HorizontalProjects() {
           { projects.map((p: any, i) => (
             <div
               key={i}
-              className="w-screen h-screen flex items-center justify-center gap-20 shrink-0 px-10"
+              className="w-screen h-screen flex flex-col md:flex-row items-center justify-center gap-6 md:gap-20 shrink-0 px-5 md:px-10"
             >
               
               {/* LHS: IMAGE */}
-              <div className="w-[45vw] h-[65vh] rounded-2xl overflow-hidden relative group">
+              <div className="w-[90vw] md:w-[45vw] h-[35vh] md:h-[65vh] rounded-2xl overflow-hidden relative group shrink-0">
                 <img
                   src={p.image}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -147,19 +147,19 @@ export default function HorizontalProjects() {
               </div>
 
               {/* RHS: TEXT */}
-              <div className="w-[35vw] flex flex-col justify-center">
-                <span className="text-8xl font-bold text-gray-800 mb-4 block leading-none opacity-50">
+              <div className="w-[90vw] md:w-[35vw] flex flex-col justify-center">
+                <span className="text-5xl md:text-8xl font-bold text-gray-800 mb-2 md:mb-4 block leading-none opacity-50">
                   {p.id}
                 </span>
-                <h2 className="text-6xl font-bold mb-6 leading-tight">
+                <h2 className="text-4xl md:text-6xl font-bold mb-3 md:mb-6 leading-tight">
                   {p.title}
                 </h2>
-                <p className="text-xl text-gray-400 max-w-xl mb-10 leading-relaxed">
+                <p className="text-base md:text-xl text-gray-400 max-w-xl mb-6 md:mb-10 leading-relaxed text-balance md:text-wrap">
                   {p.desc}
                 </p>
 
                 <a
-                  href={p.link ? p.link : "#"}
+                  href={p.link ? p.link : "https://github.com/Neeraj-Singh-Codes"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex items-center gap-3 text-xl font-medium hover:gap-6 transition-all duration-300 border-b border-white/20 pb-1 w-fit hover:border-white"

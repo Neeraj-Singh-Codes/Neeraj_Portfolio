@@ -43,7 +43,7 @@ export default function Timeline() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-7xl md:text-[8rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20 mb-6"
+          className="text-5xl md:text-[8rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20 mb-6"
         >
           My Journey
         </motion.h2>
@@ -95,7 +95,7 @@ function TimelineItem({ item, index }: { item: any; index: number }) {
             style={{ willChange: "transform, opacity" }}
             className={`ml-16 md:ml-0 w-full md:w-[45%] p-8 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-300 group hover:-translate-y-2`}
         >
-             <span className="text-5xl md:text-7xl font-bold text-white/10 absolute -top-10 right-4 md:right-auto md:left-4 select-none pointer-events-none font-mono">
+             <span className="text-4xl md:text-7xl font-bold text-white/10 absolute -top-8 md:-top-10 right-4 md:right-auto md:left-4 select-none pointer-events-none font-mono">
                 {item.year}
              </span>
 

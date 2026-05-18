@@ -137,7 +137,7 @@ export default function Hero({ startAnimation }: { startAnimation: boolean }) {
           <motion.h1
             initial={{ opacity: 0, y: 60 }}
             animate={startAnimation ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 1, delay: 0.28 }}
+            transition={{ duration: 1, delay: 0.1 }}
             className="text-gray-400 font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[148px]"
           >
             MODERN
@@ -146,7 +146,7 @@ export default function Hero({ startAnimation }: { startAnimation: boolean }) {
           <motion.h1
             initial={{ opacity: 0, y: 60 }}
             animate={startAnimation ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 1, delay: 0.58 }}
+            transition={{ duration: 1, delay: 0.2 }}
             className="text-gray-400 font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[148px]"
           >
             WEB ENGINEER
@@ -156,8 +156,8 @@ export default function Hero({ startAnimation }: { startAnimation: boolean }) {
           <motion.p
             initial={{ opacity: 0, y: 60 }}
             animate={startAnimation ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 1, delay: 0.62 }}
-            className="text-lg sm:text-lg tracking-wider text-white font-bold flex items-center justify-end -mt-4"
+            transition={{ duration: 1, delay: 0.3 }}
+            className="text-base sm:text-lg tracking-wider text-white font-bold flex items-center justify-start md:justify-end mt-2 md:-mt-4"
           >
             BASED IN MUMBAI <ArrowUpRight className="size-5 ml-1" />
           </motion.p>
@@ -169,16 +169,16 @@ export default function Hero({ startAnimation }: { startAnimation: boolean }) {
         initial={{ opacity: 0, y: -20 }}
         animate={startAnimation ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 1, delay: 0.7 }}
-        className="w-full px-[2.5%] flex justify-end font-general font-medium text-lg py-4"
+        className="w-full px-4 md:px-[2.5%] flex justify-center md:justify-end font-general font-medium text-base md:text-lg py-4"
       >
-        <div className="text-right">
+        <div className="text-center md:text-right">
           <p>Available for InternShips</p>
           <p> and Freelancing</p>
         </div>
       </motion.div>
 
       {/* ================= BOTTOM FOOTER INFO ================= */}
-      <div className="w-full px-[2.5%] pb-8 flex flex-col md:flex-row justify-between items-end font-general font-medium text-xl">
+      <div className="w-full px-4 md:px-[2.5%] pb-8 flex flex-row justify-between items-center md:items-end font-general font-medium text-sm md:text-xl">
         
         <p className="hover-underline">CS Student</p>
         

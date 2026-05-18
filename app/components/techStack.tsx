@@ -44,13 +44,13 @@ export default function TechStack() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: true }}
-          className="text-7xl md:text-[10rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-gray-400 to-black/80 leading-[0.9]"
+          className="text-5xl md:text-[10rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-gray-400 to-black/80 leading-[0.9]"
         >
           Tech Stack
         </motion.h2>
       </div>
 
-      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-32 items-start">
+      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-32 items-start px-5 md:px-0">
         
         {/* LEFT COLUMN: NAVIGATION */}
         <div className="flex flex-col justify-center gap-8">
@@ -69,7 +69,7 @@ export default function TechStack() {
                     </span>
                     {/* Lucid Slide Animation */}
                     <h2 
-                        className={`text-5xl md:text-[92px] font-bold uppercase tracking-tighter transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${activeId === i ? "translate-x-6 text-white" : "text-white/40 group-hover:text-white/70"}`}
+                        className={`text-4xl md:text-[92px] font-bold uppercase tracking-tighter transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${activeId === i ? "translate-x-6 text-white" : "text-white/40 group-hover:text-white/70"}`}
                     >
                         {cat.name}
                     </h2>

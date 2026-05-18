@@ -43,7 +43,7 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-className="flex justify-between items-center px-[2.5%] py-7 bg-black text-white font-general font-medium text-lg relative w-full top-0 left-0 z-50 ">
+className="flex justify-between items-center px-4 md:px-[2.5%] py-5 md:py-7 bg-black text-white font-general font-medium text-sm md:text-lg relative w-full top-0 left-0 z-50 ">
       <div>Neeraj Singh</div>
 
       <AnimatePresence mode="wait">
@@ -71,7 +71,7 @@ className="flex justify-between items-center px-[2.5%] py-7 bg-black text-white 
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.35 }}
-            className="flex gap-7"
+            className="flex gap-4 md:gap-7 items-center"
           >
             <button onClick={() => handleNavClick('projects')} className='cursor-pointer hover-underline uppercase uppercase'>PROJECTS</button>
             <button onClick={() => handleNavClick('skills')} className='cursor-pointer hover-underline uppercase'>SKILLS</button>

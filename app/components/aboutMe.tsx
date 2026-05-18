@@ -1,15 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { User, Github, Linkedin, Mail, Twitter, Download, MessageSquare } from "lucide-react";
+import { User, Github, Linkedin, Mail, Twitter, Download, MessageSquare, Instagram } from "lucide-react";
 import Link from "next/link";
 
 export default function AboutMe() {
   const socials = [
     { name: "GitHub", icon: Github, link: "https://github.com/Neeraj-Singh-Codes" },
-    { name: "LinkedIn", icon: Linkedin, link: "#" },
-    { name: "Email", icon: Mail, link: "mailto:neeraj023582@gmail.com" },
-    { name: "Twitter", icon: Twitter, link: "#" },
+    { name: "LinkedIn", icon: Linkedin, link: "https://www.linkedin.com/in/neeraj-singh-44a2a9259/" },
+    { name: "Instagram", icon: Instagram, link: "https://www.instagram.com/neeraj___singh9?igsh=MW5jaXpoNGh4aHVyaw==" },
+    { name: "Twitter", icon: Twitter, link: "https://x.com/_NeerajSinghh" },
   ];
 
   return (
@@ -21,7 +21,7 @@ export default function AboutMe() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: true }}
-          className="text-6xl md:text-[8rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20 leading-none"
+          className="text-5xl md:text-[8rem] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20 leading-none"
         >
           About Me
         </motion.h2>
@@ -43,7 +43,7 @@ export default function AboutMe() {
             {/* Image Placeholder (replace inner div with an <img> later) */}
             <div className="w-full h-full bg-white/5 rounded-3xl flex items-center justify-center overflow-hidden relative backdrop-blur-sm">
                 {/* Fallback Icon */}
-                <User className="size-32 md:size-48 text-white/20 group-hover:text-white/40 transition-colors duration-500" />
+                <User className="size-24 md:size-48 text-white/20 group-hover:text-white/40 transition-colors duration-500" />
                 {/* To add your image: */}
                 {/* <img src="/your-profile.jpg" alt="Profile" className="w-full h-full object-cover" /> */}
             </div>
@@ -79,16 +79,16 @@ export default function AboutMe() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-6 mt-4">
-             <Link href="#">
+             <Link href="Neeraj-CV.pdf">
                <button className="flex items-center gap-2 px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors duration-300">
                  <Download className="size-5" />
-                 Resume
+                 View CV
                </button>
              </Link>
-             <Link href="#">
+             <Link href="mailto:neeraj023582@gmail.com">
                <button className="flex items-center gap-2 px-8 py-4 bg-black border border-white/20 text-white font-bold rounded-full hover:bg-white/10 transition-colors duration-300">
                  <MessageSquare className="size-5" />
-                 Contact Me
+                    Let's Build Something               
                </button>
              </Link>
           </div>
